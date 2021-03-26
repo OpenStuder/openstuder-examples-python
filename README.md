@@ -12,7 +12,7 @@ You need **git** to clone the projects to your local machine.
 
 	# sudo apt install git
 
-### Python 3.6+, pip, virtualenv and Tk bindings for Python (tkinter)
+### Python 3.7+, pip, virtualenv and Tk bindings for Python (tkinter)
 
 	# sudo apt install python3 python3-pip python3-tk
 	# sudo pip3 install virtualenv
