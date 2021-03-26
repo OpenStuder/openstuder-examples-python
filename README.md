@@ -21,9 +21,9 @@ You need **git** to clone the projects to your local machine.
 
 Simple interactive shell to demonstrate the use if the **synchronous** client. We recommend to start with this example if you are new to OpenStuder as this is by far the simplest example.
 
-<a href="https://asciinema.org/a/wrTrVu0qZWy8dUJf0YOKIPoUf" target="_blank"><img src="https://asciinema.org/a/wrTrVu0qZWy8dUJf0YOKIPoUf.svg" /></a>
+![](common/cli.svg)
 
-All the code is in **sicli**, to run the example do:
+All the code is in the file **sicli**, to run the example do:
 
 	# git clone https://github.com/OpenStuder/openstuder-examples-python.git
 	# cd openstuder-examples-python/cli
@@ -41,7 +41,7 @@ Simple GUI application to plot or download logged property values from an OpenSt
 
 Tested to work on Ubuntu Linux and macOS, whereby it looks terrible on macOS Big Sur due to incompatibilities of tkinter with the new look and feel of macOS.
 
-All the code is in **main.py**, to run the example do:
+All the code is in the file **main.py**, to run the example do:
 
 	# git clone https://github.com/OpenStuder/openstuder-examples-python.git
 	# cd openstuder-examples-python/datalog-gui
