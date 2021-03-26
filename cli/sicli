@@ -1,0 +1,206 @@
+#!python3
+
+import argparse
+import urllib.parse
+import getpass
+from cmd import Cmd
+from openstuder import *
+
+
+class SIInteractiveShell(Cmd):
+    def __init__(self, client, intro=None, prompt='~ '):
+        super(SIInteractiveShell, self).__init__()
+        self.client = client
+        self.intro = intro
+        self.prompt = prompt
+
+    def do_info(self, _):
+        """
+        info: Shows info about the connection to the gateway.
+        """
+
+        print(f'client state:', self.client.state().name)
+        print(f'gateway version: {self.client.gateway_version()}')
+        print(f'access level: {self.client.access_level().name}')
+
+    def do_enumerate(self, _):
+        """
+        enumerate: Instructs the gateway to scan every configured and functional device access driver for new devices and remove devices that do not respond anymore.
+        """
+
+        try:
+            status, device_count = self.client.enumerate()
+            if status == SIStatus.SUCCESS:
+                print(f'enumeration completed, {device_count} devices present.')
+            else:
+                print(f'enumeration failed: {status.name}.')
+        except SIProtocolError as protocol_error:
+            print(f'enumeration failed: {protocol_error}.')
+        except Exception as error:
+            print(f'enumeration failed: {error}.')
+
+    def do_describe(self, arg):
+        """
+        describe [id]: Can be used to retrieve information about the available devices and their properties from the connected gateway.
+                       The optional argument id can refer to a device access, a device or a property.
+        """
+
+        # TODO: Add support for describe flags.
+        try:
+            ids = []
+            if arg:
+                ids = arg.split('.')
+            status, id_, description = self.client.describe(ids[0] if 0 < len(ids) else None, ids[1] if 1 < len(ids) else None, ids[2] if 2 < len(ids) else None)
+            if status == SIStatus.SUCCESS:
+                print(json.dumps(description, indent=2))
+            else:
+                print(f'describe failed: {status.name}.')
+        except SIProtocolError as protocol_error:
+            print(f'describe failed: {protocol_error}.')
+        except Exception as error:
+            print(f'describe failed: {error}.')
+
+    def do_read(self, args):
+        """
+        read property_id [property_id...]: Can be used to retrieve the actual value of one or multiple properties from the connected gateway.
+        """
+
+        try:
+            parameters = args.split()
+
+            if len(parameters) == 0:
+                print('read failed: at least one parameter id is required.')
+                return
+
+            if len(parameters) == 1:
+                status, id_, value = self.client.read_property(parameters[0])
+                if status == SIStatus.SUCCESS:
+                    print(f'{id_} = {value}')
+                else:
+                    print(f'{id_} = <failed: {status.name}>')
+            else:
+                results = self.client.read_properties(parameters)
+                for result in results:
+                    if result.status == SIStatus.SUCCESS:
+                        print(f'{result.id} = {result.value}')
+                    else:
+                        print(f'{result.id} = <failed: {result.status}>')
+        except SIProtocolError as protocol_error:
+            print(f'read failed: {protocol_error}.')
+        except Exception as error:
+            print(f'read failed: {error}.')
+
+    def do_write(self, args):
+        """
+        write property_id [value]: This command can be used to change the actual value of a given property.
+                                   The value argument is optional.
+        """
+
+        # TODO: Add support for write flags.
+        try:
+            parameters = args.split()
+
+            if len(parameters) == 0:
+                print('write failed: at least the parameter id is required.')
+                return
+
+            if len(parameters) == 1:
+                status, id_ = self.client.write_property(parameters[0])
+                if status == SIStatus.SUCCESS:
+                    print(f'write {id_} completed.')
+                else:
+                    print(f'write {id_} failed: {status.name}')
+            else:
+                status, id_ = self.client.write_property(parameters[0], parameters[1])
+                if status == SIStatus.SUCCESS:
+                    print(f'write {id_} = {parameters[1]} completed.')
+                else:
+                    print(f'write {id_} = {parameters[1]} failed: {status.name}')
+        except SIProtocolError as protocol_error:
+            print(f'write failed: {protocol_error}.')
+        except Exception as error:
+            print(f'write failed: {error}.')
+
+    def do_datalog(self, arg):
+        """
+        datalog [property_id]: Can be used to retrieve all or a subset of logged data of the given property from the gateway.
+                               If not property_id is passed, the list of available properties is print out.
+        """
+
+        # TODO: Add support for from, to and limit.
+        try:
+            status, id_, count, csv = self.client.read_datalog_csv(arg if len(arg) > 0 else None)
+            if status == SIStatus.SUCCESS:
+                print(csv)
+            else:
+                print(f'datalog failed: {status.name}')
+        except SIProtocolError as protocol_error:
+            print(f'datalog failed: {protocol_error}.')
+        except Exception as error:
+            print(f'datalog failed: {error}.')
+
+    def do_messages(self, _):
+        """
+        messages: Can be used to retrieve all or a subset of stored messages send by devices on all buses in the past from the gateway.
+        """
+        # TODO: Add support for from, to and limit.
+        try:
+            status, count, messages = self.client.read_messages()
+            if status == SIStatus.SUCCESS:
+                for message in messages:
+                    print(f'[{message.timestamp}] {message.access_id}.{message.device_id}: {message.message} ({message.message_id})')
+            else:
+                print(f'messages failed: {status.name}')
+        except SIProtocolError as protocol_error:
+            print(f'messages failed: {protocol_error}.')
+        except Exception as error:
+            print(f'messages failed: {error}.')
+
+    def do_quit(self, _):
+        """Disconnects from the gateway and quits the interactive shell"""
+        self.client.disconnect()
+        return True
+
+    do_EOF = do_quit
+    do_exit = do_quit
+
+
+if __name__ == '__main__':
+    # Parse arguments passed.
+    parser = argparse.ArgumentParser(description='OpenStuder CLI')
+    parser.add_argument('gateway', metavar='gateway_address', type=str, help='gateway address in the form [user[:password]@]host[:port].')
+    parser.add_argument('command', type=str, nargs='*', help='command(s) to execute, note that interactive mode is disabled if at least one command is passed.')
+    args = parser.parse_args()
+
+    # Parse gateway address - it is basically an URL without the scheme.
+    connection_params = urllib.parse.urlparse(f'//{args.gateway}')
+    password = connection_params.password
+
+    # If a user was specified but no password, ask for the password.
+    if connection_params.username and not password:
+        password = getpass.getpass('password:')
+
+    # Create the client and try to establish connection.
+    client = SIGatewayClient()
+    try:
+        if client.connect(connection_params.hostname or 'localhost', connection_params.port or 1987, connection_params.username, password) == SIAccessLevel.NONE:
+            print(f'could not connect to gateway: unknown error.')
+            exit(1)
+    except SIProtocolError as error:
+        print(f'could not connect to gateway: {error}.')
+        exit(1)
+    except ConnectionRefusedError:
+        print('could not connect to gateway: connection refused.')
+        exit(1)
+
+    # Create interactive shell.
+    shell = SIInteractiveShell(client,
+                               intro=f'connected to {connection_params.hostname} running gateway version {client.gateway_version()} with access level {client.access_level().name}',
+                               prompt=f'{connection_params.hostname} \033[94m~\033[0m ')
+
+    # If at least one command was given, run the passed commands and exit, otherwise start interactive shell.
+    if args.command is not None and len(args.command) > 0:
+        for command in args.command:
+            shell.onecmd(command)
+    else:
+        shell.cmdloop()
