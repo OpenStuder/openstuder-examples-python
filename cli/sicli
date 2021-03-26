@@ -39,18 +39,57 @@ class SIInteractiveShell(Cmd):
         except Exception as error:
             print(f'enumeration failed: {error}.')
 
-    def do_describe(self, arg):
+    def do_describe(self, args):
         """
-        describe [id]: Can be used to retrieve information about the available devices and their properties from the connected gateway.
-                       The optional argument id can refer to a device access, a device or a property.
+        describe [id] [drv] [acc] [dev] [prop]: Can be used to retrieve information about the available devices and their properties from the connected gateway.
+                                                The optional argument id can refer to a device access, a device or a property. Adding "drv" includes driver information,
+                                                "acc" includes device access information, "dev" includes device information and "prop" includes properties information. If none
+                                                of these flags are provided, the gateway uses it's default flags.
         """
 
-        # TODO: Add support for describe flags.
         try:
+            parameters = args.split()
+            flags = None
+            try:
+                i = parameters.index('drv')
+                if not flags:
+                    flags = SIDescriptionFlags.NONE
+                flags |= SIDescriptionFlags.INCLUDE_DRIVER_INFORMATION
+                parameters.pop(i)
+            except:
+                pass
+            try:
+                i = parameters.index('acc')
+                if not flags:
+                    flags = SIDescriptionFlags.NONE
+                flags |= SIDescriptionFlags.INCLUDE_ACCESS_INFORMATION
+                parameters.pop(i)
+            except:
+                pass
+            try:
+                i = parameters.index('dev')
+                if not flags:
+                    flags = SIDescriptionFlags.NONE
+                flags |= SIDescriptionFlags.INCLUDE_DEVICE_INFORMATION
+                parameters.pop(i)
+            except:
+                pass
+            try:
+                i = parameters.index('prop')
+                if not flags:
+                    flags = SIDescriptionFlags.NONE
+                flags |= SIDescriptionFlags.INCLUDE_PROPERTY_INFORMATION
+                parameters.pop(i)
+            except:
+                pass
+
             ids = []
-            if arg:
-                ids = arg.split('.')
-            status, id_, description = self.client.describe(ids[0] if 0 < len(ids) else None, ids[1] if 1 < len(ids) else None, ids[2] if 2 < len(ids) else None)
+            if len(parameters) > 1:
+                print(f'invalid syntax.')
+                return
+            if len(parameters) == 1:
+                ids = parameters[0].split('.')
+            status, id_, description = self.client.describe(ids[0] if 0 < len(ids) else None, ids[1] if 1 < len(ids) else None, ids[2] if 2 < len(ids) else None, flags)
             if status == SIStatus.SUCCESS:
                 print(json.dumps(description, indent=2))
             else:
@@ -92,11 +131,10 @@ class SIInteractiveShell(Cmd):
 
     def do_write(self, args):
         """
-        write property_id [value]: This command can be used to change the actual value of a given property.
-                                   The value argument is optional.
+        write property_id [value] [ram]: This command can be used to change the actual value of a given property.
+                                         The value argument is optional. If value is present the flag "ram" allows to write the value non-persistent.
         """
 
-        # TODO: Add support for write flags.
         try:
             parameters = args.split()
 
@@ -110,26 +148,60 @@ class SIInteractiveShell(Cmd):
                     print(f'write {id_} completed.')
                 else:
                     print(f'write {id_} failed: {status.name}')
-            else:
+            elif len(parameters) == 2:
                 status, id_ = self.client.write_property(parameters[0], parameters[1])
                 if status == SIStatus.SUCCESS:
                     print(f'write {id_} = {parameters[1]} completed.')
                 else:
                     print(f'write {id_} = {parameters[1]} failed: {status.name}')
+            elif len(parameters) == 3:
+                if parameters[2] != 'ram':
+                    print('write failed: third parameter can only be "ram".')
+                    return
+                status, id_ = self.client.write_property(parameters[0], parameters[1], SIWriteFlags.NONE)
+                if status == SIStatus.SUCCESS:
+                    print(f'write {id_} = {parameters[1]} completed.')
+                else:
+                    print(f'write {id_} = {parameters[1]} failed: {status.name}')
+                pass
+            else:
+                print('write failed: to many parameters.')
         except SIProtocolError as protocol_error:
             print(f'write failed: {protocol_error}.')
         except Exception as error:
             print(f'write failed: {error}.')
 
-    def do_datalog(self, arg):
+    def do_datalog(self, args):
         """
-        datalog [property_id]: Can be used to retrieve all or a subset of logged data of the given property from the gateway.
-                               If not property_id is passed, the list of available properties is print out.
+        datalog [property_id] [from=...] [to=...] [limit=...]: Can be used to retrieve all or a subset of logged data of the given property from the gateway.
+                                                               If not property_id is passed, the list of available properties is print out. Using the optional parameters from=...
+                                                               and to=... whose value has to be a datetime in ISO 8601 format you can select the time frame and using the optional
+                                                               parameter limit=... you can limit the number of entries returned.
         """
 
-        # TODO: Add support for from, to and limit.
+        property_id = None
+        from_ = None
+        to = None
+        limit = None
+        for arg in args.split():
+            if arg.startswith('from='):
+                from_ = datetime.datetime.fromisoformat(arg[5:])
+            elif arg.startswith('to='):
+                to = datetime.datetime.fromisoformat(arg[3:])
+            elif arg.startswith('limit='):
+                try:
+                    limit = int(arg[6:])
+                except ValueError:
+                    print(f'datalog failed: invalid limit argument.')
+                    return
+            else:
+                if property_id is None:
+                    property_id = arg
+                else:
+                    print(f'datalog failed: invalid arguments.')
+                    return
         try:
-            status, id_, count, csv = self.client.read_datalog_csv(arg if len(arg) > 0 else None)
+            status, id_, count, csv = self.client.read_datalog_csv(property_id, from_, to, limit)
             if status == SIStatus.SUCCESS:
                 print(csv)
             else:
@@ -139,13 +211,32 @@ class SIInteractiveShell(Cmd):
         except Exception as error:
             print(f'datalog failed: {error}.')
 
-    def do_messages(self, _):
+    def do_messages(self, args):
         """
-        messages: Can be used to retrieve all or a subset of stored messages send by devices on all buses in the past from the gateway.
+        messages [from=...] [to=...] [limit=...]: Can be used to retrieve all or a subset of stored messages send by devices on all buses in the past from the gateway.
+                                                  Using the optional parameters from=... and to=... whose value has to be a datetime in ISO 8601 format you can select the time
+                                                  frame and using the optional parameter limit=... you can limit the number of entries returned.
         """
-        # TODO: Add support for from, to and limit.
+
+        from_ = None
+        to = None
+        limit = None
+        for arg in args.split():
+            if arg.startswith('from='):
+                from_ = datetime.datetime.fromisoformat(arg[5:])
+            elif arg.startswith('to='):
+                to = datetime.datetime.fromisoformat(arg[3:])
+            elif arg.startswith('limit='):
+                try:
+                    limit = int(arg[6:])
+                except ValueError:
+                    print(f'datalog failed: invalid limit argument.')
+                    return
+            else:
+                print(f'datalog failed: invalid arguments.')
+                return
         try:
-            status, count, messages = self.client.read_messages()
+            status, count, messages = self.client.read_messages(from_, to, limit)
             if status == SIStatus.SUCCESS:
                 for message in messages:
                     print(f'[{message.timestamp}] {message.access_id}.{message.device_id}: {message.message} ({message.message_id})')
