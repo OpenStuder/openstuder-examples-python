@@ -232,7 +232,7 @@ class MainWindow(tk.Tk):
 
         # Create controls frame controls for the query.
         self._controlsFrame = tk.Frame(self._container, bg='#014289')
-        self._controlsFrame.pack(side=tk.LEFT, fill=tk.Y, expand=True)
+        self._controlsFrame.pack(side=tk.LEFT, fill=tk.Y, expand=False)
 
         # Add logo image.
         logo_image = Image.open('logo.png')
@@ -271,16 +271,14 @@ class MainWindow(tk.Tk):
         self._download_button.config(state=tk.DISABLED)
 
         # Add plot output widget including navigator controls.
-        inch_size = (640 / 25.4, 320 / 25.4)
-        self.figure = plt.Figure(inch_size)
+        self.figure = plt.Figure()
         self.axes = self.figure.add_subplot(111)
-        self.figure.tight_layout(pad=4)
         self.canvas = FigureCanvasTkAgg(self.figure, master=self._container)
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         self.toolbar = NavigationToolbar2Tk(self.canvas, self._container)
         self.toolbar.config(bg='#3FA652')
         self.toolbar.update()
-        self.toolbar.pack(side=tk.TOP, expand=False)
+        self.toolbar.pack(side=tk.TOP, fill=tk.X, expand=False)
 
         # Initially open the connect dialog.
         self.on_connect_button_clicked()
