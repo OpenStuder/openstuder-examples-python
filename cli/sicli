@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import sys
 import urllib.parse
 import getpass
 from cmd import Cmd
@@ -285,9 +286,13 @@ if __name__ == '__main__':
         exit(1)
 
     # Create interactive shell.
+    if sys.platform == 'win32':
+        prompt = f'{connection_params.hostname} ~ '
+    else:
+        prompt = f'\033[94m{connection_params.hostname} ~\033[0m '
     shell = SIInteractiveShell(client,
                                intro=f'connected to {connection_params.hostname} running gateway version {client.gateway_version()} with access level {client.access_level().name}',
-                               prompt=f'\033[94m{connection_params.hostname} ~\033[0m ')
+                               prompt=prompt)
 
     # If at least one command was given, run the passed commands and exit, otherwise start interactive shell.
     if args.command is not None and len(args.command) > 0:
