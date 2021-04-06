@@ -231,31 +231,31 @@ class MainWindow(tk.Tk):
         self._container.pack(fill=tk.BOTH, expand=True)
 
         # Create controls frame controls for the query.
-        self._controlsFrame = tk.Frame(self._container, bg='#014289')
+        self._controlsFrame = tk.Frame(self._container, bg='#549DB5')
         self._controlsFrame.pack(side=tk.LEFT, fill=tk.Y, expand=False)
 
         # Add logo image.
         logo_image = Image.open('logo.png')
         self._logo_render = ImageTk.PhotoImage(logo_image)
-        self._logo = tk.Label(self._controlsFrame, image=self._logo_render, width=250, height=150, bg='#014289', fg='white')
+        self._logo = tk.Label(self._controlsFrame, image=self._logo_render, width=250, height=150, bg='#549DB5', fg='white')
         self._logo.pack(side=tk.TOP, fill=tk.NONE)
 
         # Add from date picker control.
-        self._from_date_label = tk.Label(self._controlsFrame, text='From:', fg='white', bg='#014289')
+        self._from_date_label = tk.Label(self._controlsFrame, text='From:', fg='white', bg='#549DB5')
         self._from_date_label.pack(side=tk.TOP, pady=(10, 0))
-        self._from_date_picker = tkcal.DateEntry(self._controlsFrame, foreground='white', background='#014289')
+        self._from_date_picker = tkcal.DateEntry(self._controlsFrame, foreground='white', background='#549DB5')
         self._from_date_picker.set_date(datetime.datetime.now())
         self._from_date_picker.pack(side=tk.TOP, fill=tk.X, padx=10)
 
         # Add to date picker control.
-        self._to_date_label = tk.Label(self._controlsFrame, text='To:', fg='white', bg='#014289')
+        self._to_date_label = tk.Label(self._controlsFrame, text='To:', fg='white', bg='#549DB5')
         self._to_date_label.pack(side=tk.TOP, pady=(10, 0))
-        self._to_date_picker = tkcal.DateEntry(self._controlsFrame, foreground='white', bg='#014289')
+        self._to_date_picker = tkcal.DateEntry(self._controlsFrame, foreground='white', bg='#549DB5')
         self._to_date_picker.set_date(datetime.datetime.now())
         self._to_date_picker.pack(side=tk.TOP, fill=tk.X, padx=10)
 
         # Add property list to pick the one to display/download.
-        self._property_list_label = tk.Label(self._controlsFrame, text='Properties:', fg='white', bg='#014289')
+        self._property_list_label = tk.Label(self._controlsFrame, text='Properties:', fg='white', bg='#549DB5')
         self._property_list_label.pack(side=tk.TOP, pady=(10, 0))
         self.property_list = tk.Listbox(self._controlsFrame, selectmode=tk.MULTIPLE)
         self.property_list.pack(side=tk.TOP, fill=tk.BOTH, padx=10, expand=True)
@@ -276,7 +276,6 @@ class MainWindow(tk.Tk):
         self.canvas = FigureCanvasTkAgg(self.figure, master=self._container)
         self.canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         self.toolbar = NavigationToolbar2Tk(self.canvas, self._container)
-        self.toolbar.config(bg='#3FA652')
         self.toolbar.update()
         self.toolbar.pack(side=tk.TOP, fill=tk.X, expand=False)
 
