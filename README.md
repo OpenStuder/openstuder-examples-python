@@ -49,3 +49,31 @@ All the code is in the file **main.py**, to run the example do:
 	# source venv/bin/activate
 	# pip install -r requirements.txt
 	# python main.py
+
+## dashboard
+
+Dashboard GUI application showing the most important values from a Xcom485i or Demo installation. *tkinter* based. This example demonstrates the use of the **asynchronous** client.
+
+![](common/dashboard.gif)
+
+Tested to work on Ubuntu Linux and macOS.
+
+The code is in multiple files to simplify understanding the code:
+
+- **installation.py**: Installation abstractions - Contains information which properties have to be read for the values displayed and contains the business logic to sum values from multiple devices.
+- **uielements.py**: Basic user interface widgets like buttons, switches and the dashboard page base class.
+- **connection.py**: Dashboard page used to establish connection to OpenStuder gateway.
+- **overview.py**: Overview dashboard page.
+- **energy.py**: Energy summary dashboard page.
+- **battery.py**: Battery details dashboard page.
+- **messages.py**: Message list dashboard page.
+- **main.py**: Application entry point and main window.
+
+To run the example do:
+
+	# git clone https://github.com/OpenStuder/openstuder-examples-python.git
+	# cd openstuder-examples-python/dashboard
+	# virtualenv venv
+	# source venv/bin/activate
+	# pip install -r requirements.txt
+	# python main.py
