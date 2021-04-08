@@ -37,7 +37,7 @@ All the code is in the file **sicli**, to run the example do:
 
 Simple GUI application to plot or download logged property values from an OpenStuder gateway. *tkinter* based. This example demonstrates the use of the **synchronous** client.
 
-![](common/datalog-gui.jpg)
+![](common/datalog-gui.gif)
 
 Tested to work on Ubuntu Linux and macOS, whereby it looks terrible on macOS Big Sur due to incompatibilities of tkinter with the new look and feel of macOS.
 

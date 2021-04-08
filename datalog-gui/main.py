@@ -279,6 +279,9 @@ class MainWindow(tk.Tk):
         self.toolbar.update()
         self.toolbar.pack(side=tk.TOP, fill=tk.X, expand=False)
 
+        tkct.center_on_screen(self)
+        self.update()
+
         # Initially open the connect dialog.
         self.on_connect_button_clicked()
 
