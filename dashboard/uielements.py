@@ -1,5 +1,6 @@
 import datetime
 import tkinter as tk
+from tkinter import font as tkft
 from tkinter import messagebox as tkmb
 
 from PIL import ImageTk, Image
@@ -49,6 +50,13 @@ class Switch(tk.Label):
 class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
     def __init__(self, parent, client):
         super(DashboardPage, self).__init__(parent)
+
+        available_fonts = tkft.families()
+        if 'Arial' in available_fonts:
+            self.__default_font = 'Arial'
+        elif 'Liberation Sans' in available_fonts:
+            self.__default_font = 'Liberation Sans'
+
         self.__main = parent.master
         self.client = client
         self._setup_ui()
@@ -56,8 +64,11 @@ class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
 
         self.__time = tk.StringVar()
         self.__update_time()
-        self.__time_label = tk.Label(self, textvariable=self.__time, font='Arial 16', bg='white', fg='black', anchor=tk.W)
+        self.__time_label = tk.Label(self, textvariable=self.__time, font=self._default_font(weight='normal'), bg='white', fg='black', anchor=tk.W)
         self.__time_label.place(x=25, y=600, width=400, height=20)
+
+    def _default_font(self, size=16, weight='bold'):
+        return tkft.Font(family=self.__default_font, size=size, weight=weight)
 
     def _setup_ui(self):
         raise NotImplementedError()

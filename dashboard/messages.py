@@ -38,6 +38,6 @@ class MessagesDashboardPage(DashboardPage):
         self.__message_list.delete('all')
         for i, message in enumerate(self.__messages):
             self.__message_list.create_line(20, i * 20, 950, i * 20, width=1, fill="#549CB5")
-            self.__message_list.create_text(30, 2 + i * 20, anchor=tk.NW, text=f'{message.access_id}.{message.device_id}')
-            self.__message_list.create_text(166, 2 + i * 20, anchor=tk.NW, text=f'{message.message} ({message.message_id})')
-            self.__message_list.create_text(815, 2 + i * 20, anchor=tk.NW, text=f'{message.timestamp}')
+            self.__message_list.create_text(30, 10 + i * 20, anchor=tk.W, text=f'{message.access_id}.{message.device_id}', font=self._default_font(size=13))
+            self.__message_list.create_text(166, 10 + i * 20, anchor=tk.W, text=f'{message.message} ({message.message_id})', font=self._default_font(size=13, weight='normal'))
+            self.__message_list.create_text(815, 10 + i * 20, anchor=tk.W, text=f'{message.timestamp}', font=self._default_font(size=13, weight='normal'))

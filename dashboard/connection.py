@@ -23,13 +23,13 @@ class ConnectionDashboardPage(DashboardPage):
 
         self.__host = tk.StringVar(self)
         self.__host.set('localhost')
-        self.__host_entry = tk.Entry(self, textvariable=self.__host, font='Arial 24 bold', bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0,
+        self.__host_entry = tk.Entry(self, textvariable=self.__host, font=self._default_font(size=24), bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0,
                                      selectborderwidth=0, disabledbackground='#DDEBF0')
         self.__host_entry.place(x=194, y=327, width=456, height=40)
 
         self.__port = tk.IntVar(self)
         self.__port.set(1987)
-        self.__port_entry = tk.Entry(self, textvariable=self.__port, font='Arial 24 bold', bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0,
+        self.__port_entry = tk.Entry(self, textvariable=self.__port, font=self._default_font(size=24), bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0,
                                      selectborderwidth=0, disabledbackground='#DDEBF0')
         self.__port_entry.place(x=694, y=327, width=102, height=40)
         self.__port_inc = Button(self, 'img/PortInc.png', callback=self.__increment_port)
@@ -39,13 +39,13 @@ class ConnectionDashboardPage(DashboardPage):
 
         self.__username = tk.StringVar(self)
         self.__username.set('')
-        self.__username_entry = tk.Entry(self, textvariable=self.__username, font='Arial 24 bold', bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0,
+        self.__username_entry = tk.Entry(self, textvariable=self.__username, font=self._default_font(size=24), bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0,
                                      selectborderwidth=0, disabledbackground='#DDEBF0')
         self.__username_entry.place(x=194, y=419, width=290, height=40)
 
         self.__password = tk.StringVar(self)
         self.__password.set('')
-        self.__password_entry = tk.Entry(self, textvariable=self.__password, font='Arial 24 bold', bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0,
+        self.__password_entry = tk.Entry(self, textvariable=self.__password, font=self._default_font(size=24), bg='#DDEBF0', fg='black', bd=0, borderwidth=0, highlightthickness=0,
                                          insertborderwidth=0, selectborderwidth=0, show='*', disabledbackground='#DDEBF0')
         self.__password_entry.place(x=535, y=419, width=290, height=40)
 

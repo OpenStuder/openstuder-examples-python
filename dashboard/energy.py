@@ -19,52 +19,52 @@ class EnergyDashboardPage(DashboardPage):
 
         self.__solar_production_today = tk.StringVar()
         self.__solar_production_today.set('-')
-        self.__solar_production_today_label = tk.Label(self, textvariable=self.__solar_production_today, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__solar_production_today_label = tk.Label(self, textvariable=self.__solar_production_today, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__solar_production_today_label.place(x=44, y=255, width=148, height=44)
 
         self.__solar_production_yesterday = tk.StringVar()
         self.__solar_production_yesterday.set('-')
-        self.__solar_production_yesterday_label = tk.Label(self, textvariable=self.__solar_production_yesterday, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__solar_production_yesterday_label = tk.Label(self, textvariable=self.__solar_production_yesterday, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__solar_production_yesterday_label.place(x=44, y=428, width=148, height=44)
 
         self.__grid_today = tk.StringVar()
         self.__grid_today.set('...')
-        self.__grid_today_label = tk.Label(self, textvariable=self.__grid_today, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__grid_today_label = tk.Label(self, textvariable=self.__grid_today, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__grid_today_label.place(x=292, y=255, width=148, height=44)
 
         self.__grid_yesterday = tk.StringVar()
         self.__grid_yesterday.set('...')
-        self.__grid_yesterday_label = tk.Label(self, textvariable=self.__grid_yesterday, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__grid_yesterday_label = tk.Label(self, textvariable=self.__grid_yesterday, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__grid_yesterday_label.place(x=292, y=428, width=148, height=44)
 
         self.__consumption_today = tk.StringVar()
         self.__consumption_today.set('...')
-        self.__consumption_today_label = tk.Label(self, textvariable=self.__consumption_today, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__consumption_today_label = tk.Label(self, textvariable=self.__consumption_today, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__consumption_today_label.place(x=786, y=255, width=148, height=44)
 
         self.__consumption_yesterday = tk.StringVar()
         self.__consumption_yesterday.set('...')
-        self.__consumption_yesterday_label = tk.Label(self, textvariable=self.__consumption_yesterday, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__consumption_yesterday_label = tk.Label(self, textvariable=self.__consumption_yesterday, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__consumption_yesterday_label.place(x=786, y=428, width=148, height=44)
 
         self.__battery_charged_today = tk.StringVar()
         self.__battery_charged_today.set('...')
-        self.__battery_charged_today_label = tk.Label(self, textvariable=self.__battery_charged_today, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__battery_charged_today_label = tk.Label(self, textvariable=self.__battery_charged_today, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__battery_charged_today_label.place(x=539, y=255, width=148, height=44)
 
         self.__battery_charged_yesterday = tk.StringVar()
         self.__battery_charged_yesterday.set('...')
-        self.__battery_charged_yesterday_label = tk.Label(self, textvariable=self.__battery_charged_yesterday, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__battery_charged_yesterday_label = tk.Label(self, textvariable=self.__battery_charged_yesterday, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__battery_charged_yesterday_label.place(x=539, y=341, width=148, height=44)
 
         self.__battery_discharged_today = tk.StringVar()
         self.__battery_discharged_today.set('...')
-        self.__battery_discharged_today_label = tk.Label(self, textvariable=self.__battery_discharged_today, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__battery_discharged_today_label = tk.Label(self, textvariable=self.__battery_discharged_today, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__battery_discharged_today_label.place(x=539, y=428, width=148, height=44)
 
         self.__battery_discharged_yesterday = tk.StringVar()
         self.__battery_discharged_yesterday.set('...')
-        self.__battery_discharged_yesterday_label = tk.Label(self, textvariable=self.__battery_discharged_yesterday, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__battery_discharged_yesterday_label = tk.Label(self, textvariable=self.__battery_discharged_yesterday, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__battery_discharged_yesterday_label.place(x=539, y=514, width=148, height=44)
 
     def _activate(self, installation):

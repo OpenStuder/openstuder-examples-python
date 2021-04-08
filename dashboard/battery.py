@@ -19,27 +19,27 @@ class BatteryDashboardPage(DashboardPage):
 
         self.__power = tk.StringVar()
         self.__power.set('...')
-        self.__power_label = tk.Label(self, textvariable=self.__power, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__power_label = tk.Label(self, textvariable=self.__power, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__power_label.place(x=374, y=221, width=158, height=46)
 
         self.__voltage = tk.StringVar()
         self.__voltage.set('...')
-        self.__voltage_label = tk.Label(self, textvariable=self.__voltage, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__voltage_label = tk.Label(self, textvariable=self.__voltage, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__voltage_label.place(x=673, y=221, width=158, height=46)
 
         self.__current = tk.StringVar()
         self.__current.set('...')
-        self.__current_label = tk.Label(self, textvariable=self.__current, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__current_label = tk.Label(self, textvariable=self.__current, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__current_label.place(x=374, y=335, width=158, height=46)
 
         self.__charge = tk.StringVar()
         self.__charge.set('...')
-        self.__charge_label = tk.Label(self, textvariable=self.__charge, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__charge_label = tk.Label(self, textvariable=self.__charge, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__charge_label.place(x=673, y=335, width=158, height=46)
 
         self.__temperature = tk.StringVar()
         self.__temperature.set('...')
-        self.__temperature_label = tk.Label(self, textvariable=self.__temperature, font='Arial 36 bold', bg='#DDEBF0', fg='black')
+        self.__temperature_label = tk.Label(self, textvariable=self.__temperature, font=self._default_font(size=32), bg='#DDEBF0', fg='black')
         self.__temperature_label.place(x=374, y=447, width=158, height=46)
 
         self.__battery_level_indicator = tk.Canvas(self, bg='white', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0, selectborderwidth=0)

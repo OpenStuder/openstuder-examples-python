@@ -31,27 +31,27 @@ class OverviewDashboardPage(DashboardPage):
 
         self.__ac_charge_power = tk.StringVar()
         self.__ac_charge_power.set('-')
-        self.__ac_charge_power_label = tk.Label(self, textvariable=self.__ac_charge_power, font='Arial 20 bold', bg='#DDEBF0', fg='black', anchor=tk.E)
+        self.__ac_charge_power_label = tk.Label(self, textvariable=self.__ac_charge_power, font=self._default_font(size=20), bg='#DDEBF0', fg='black', anchor=tk.E)
         self.__ac_charge_power_label.place(x=243, y=317, width=80, height=28)
 
         self.__pv_charge_power = tk.StringVar()
         self.__pv_charge_power.set('-')
-        self.__pv_charge_power_label = tk.Label(self, textvariable=self.__pv_charge_power, font='Arial 20 bold', bg='#DDEBF0', fg='black', anchor=tk.E)
+        self.__pv_charge_power_label = tk.Label(self, textvariable=self.__pv_charge_power, font=self._default_font(size=20), bg='#DDEBF0', fg='black', anchor=tk.E)
         self.__pv_charge_power_label.place(x=454, y=137, width=80, height=28)
 
         self.__consumed_power = tk.StringVar()
         self.__consumed_power.set('-')
-        self.__consumed_power_label = tk.Label(self, textvariable=self.__consumed_power, font='Arial 20 bold', bg='#DDEBF0', fg='black', anchor=tk.E)
+        self.__consumed_power_label = tk.Label(self, textvariable=self.__consumed_power, font=self._default_font(size=20), bg='#DDEBF0', fg='black', anchor=tk.E)
         self.__consumed_power_label.place(x=664, y=317, width=80, height=28)
 
         self.__battery_charge_power = tk.StringVar()
         self.__battery_charge_power.set('-')
-        self.__battery_charge_power_label = tk.Label(self, textvariable=self.__battery_charge_power, font='Arial 20 bold', bg='#DDEBF0', fg='black', anchor=tk.E)
+        self.__battery_charge_power_label = tk.Label(self, textvariable=self.__battery_charge_power, font=self._default_font(size=20), bg='#DDEBF0', fg='black', anchor=tk.E)
         self.__battery_charge_power_label.place(x=454, y=488, width=82, height=28)
 
         self.__battery_level = tk.StringVar()
         self.__battery_level.set('-')
-        self.__battery_level_label = tk.Label(self, textvariable=self.__battery_level, font='Arial 20 bold', bg='#DDEBF0', fg='black', anchor=tk.E)
+        self.__battery_level_label = tk.Label(self, textvariable=self.__battery_level, font=self._default_font(size=20), bg='#DDEBF0', fg='black', anchor=tk.E)
         self.__battery_level_label.place(x=454, y=512, width=82, height=28)
 
         self.__battery_level_indicator = tk.Canvas(self, bg='#DDEBF0', bd=0, borderwidth=0, highlightthickness=0, insertborderwidth=0, selectborderwidth=0)
@@ -60,12 +60,12 @@ class OverviewDashboardPage(DashboardPage):
 
         self.__xtender_count = tk.StringVar()
         self.__xtender_count.set('0')
-        self.__xtender_count_label = tk.Label(self, textvariable=self.__xtender_count, font='Arial 13 bold', bg='#DDEBF0', fg='black')
+        self.__xtender_count_label = tk.Label(self, textvariable=self.__xtender_count, font=self._default_font(size=13), bg='#DDEBF0', fg='black')
         self.__xtender_count_label.place(x=537, y=407, width=11, height=15)
 
         self.__new_messages_count = tk.IntVar()
         self.__new_messages_count.set(0)
-        self.__new_messages_count_label = tk.Label(self, textvariable=self.__new_messages_count, font='Arial 11 bold', bg='white', fg='#4B8CA3')
+        self.__new_messages_count_label = tk.Label(self, textvariable=self.__new_messages_count, font=self._default_font(size=11), bg='white', fg='#4B8CA3')
         self.__new_messages_count_label.place(x=927, y=55, width=13, height=12)
 
     def _activate(self, installation):
