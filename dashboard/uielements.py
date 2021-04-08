@@ -60,6 +60,7 @@ class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
             self.__size_factor = 0.8
         else:
             self.__default_font = 'Sans'
+            self.__size_factor = 1
 
         self.__main = parent.master
         self.client = client
