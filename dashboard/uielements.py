@@ -54,8 +54,12 @@ class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
         available_fonts = tkft.families()
         if 'Arial' in available_fonts:
             self.__default_font = 'Arial'
+            self.__size_factor = 1
         elif 'Liberation Sans' in available_fonts:
             self.__default_font = 'Liberation Sans'
+            self.__size_factor = 0.8
+        else:
+            self.__default_font = 'Sans'
 
         self.__main = parent.master
         self.client = client
@@ -68,7 +72,7 @@ class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
         self.__time_label.place(x=25, y=600, width=400, height=20)
 
     def _default_font(self, size=16, weight='bold'):
-        return tkft.Font(family=self.__default_font, size=size, weight=weight)
+        return tkft.Font(family=self.__default_font, size=int(size*self.__size_factor), weight=weight)
 
     def _setup_ui(self):
         raise NotImplementedError()
