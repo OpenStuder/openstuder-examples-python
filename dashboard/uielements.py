@@ -1,4 +1,5 @@
 import datetime
+import sys
 import tkinter as tk
 from tkinter import font as tkft
 from tkinter import messagebox as tkmb
@@ -54,13 +55,15 @@ class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
         available_fonts = tkft.families()
         if 'Arial' in available_fonts:
             self.__default_font = 'Arial'
-            self.__size_factor = 1
         elif 'Liberation Sans' in available_fonts:
             self.__default_font = 'Liberation Sans'
-            self.__size_factor = 0.8
         else:
             self.__default_font = 'Sans'
+
+        if sys.platform == 'darwin':
             self.__size_factor = 1
+        else:
+            self.__size_factor = 0.75
 
         self.__main = parent.master
         self.client = client
