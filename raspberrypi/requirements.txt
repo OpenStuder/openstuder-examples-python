@@ -1,0 +1,4 @@
+openstuder-client==0.3.1
+Pillow==8.1.2
+six==1.15.0
+websocket-client==0.58.0
