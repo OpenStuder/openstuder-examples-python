@@ -16,7 +16,7 @@ class ConnectDashboardPage(DashboardPage):
         self.__background.place(x=0, y=0, relwidth=1, relheight=1)
 
     def _activate(self, system_info):
-        self.client.connect("192.168.1.121")
+        self.client.connect("localhost")
 
     def _deactivate(self):
         pass
