@@ -237,7 +237,7 @@ class MainWindow(tk.Tk):
         # Add logo image.
         logo_image = Image.open('logo.png')
         self._logo_render = ImageTk.PhotoImage(logo_image)
-        self._logo = tk.Label(self._controlsFrame, image=self._logo_render, width=250, height=150, bg='#549DB5', fg='white')
+        self._logo = tk.Label(self._controlsFrame, image=self._logo_render, width=250, height=62, bg='#549DB5', fg='white')
         self._logo.pack(side=tk.TOP, fill=tk.NONE)
 
         # Add from date picker control.
