@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 from uielements import DashboardPage, Button
+import tzlocal
 
 
 class MessagesDashboardPage(DashboardPage):
@@ -40,4 +41,4 @@ class MessagesDashboardPage(DashboardPage):
             self.__message_list.create_line(0, i * 17, 760, i * 17, width=1, fill="black")
             self.__message_list.create_text(5, 8 + i * 17, anchor=tk.W, text=f'{message.access_id}.{message.device_id}', font=self._default_font(size=11))
             self.__message_list.create_text(120, 8 + i * 17, anchor=tk.W, text=f'{message.message} ({message.message_id})', font=self._default_font(size=11, weight='normal'))
-            self.__message_list.create_text(640, 8 + i * 17, anchor=tk.W, text=f'{message.timestamp}', font=self._default_font(size=13, weight='normal'))
+            self.__message_list.create_text(640, 8 + i * 17, anchor=tk.W, text=f'{message.timestamp.astimezone(tzlocal.get_localzone()).replace(tzinfo=None)}', font=self._default_font(size=13, weight='normal'))

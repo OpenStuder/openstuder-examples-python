@@ -73,7 +73,7 @@ class DashboardPage(tk.Frame, SIAsyncGatewayClientCallbacks):
         self.__time = tk.StringVar()
         self.__update_time()
         self.__time_label = tk.Label(self, textvariable=self.__time, font=self._default_font(weight='normal'), bg='white', fg='black', anchor=tk.W)
-        self.__time_label.place(x=25, y=600, width=400, height=20)
+        self.__time_label.place(x=25, y=588, width=400, height=20)
 
     def _default_font(self, size=16, weight='bold'):
         return tkft.Font(family=self.__default_font, size=int(size*self.__size_factor), weight=weight)
