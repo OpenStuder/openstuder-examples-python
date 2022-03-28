@@ -1,0 +1,317 @@
+#!/usr/bin/env python3
+
+import sys
+from cmd import Cmd
+
+from openstuder import *
+
+
+class SIInteractiveShell(Cmd, SIBluetoothGatewayClientCallbacks):
+    def __init__(self):
+        super(SIInteractiveShell, self).__init__()
+        self.set_prompt("(not connected)")
+
+        self.client = SIBluetoothGatewayClient()
+        self.client.set_callbacks(self)
+        self.event = threading.Event()
+        self.discovered_devices = []
+
+    def on_error(self, reason) -> None:
+        print(f'error: {reason}!')
+        self.done()
+
+    def do_discover(self, _):
+        """
+        discover: Discovers nearby openstuder gateways.
+        """
+
+        try:
+            self.discovered_devices = self.client.discover()
+            print(f'discovered {len(self.discovered_devices)} devices:')
+            for i in range(len(self.discovered_devices)):
+                print(f'  {i}: {self.discovered_devices[i]}')
+        except SIProtocolError as error:
+            print(f'discovery failed: {error.reason()}')
+        except BaseException as error:
+            print(f'discovery failed: {error}')
+
+    def do_connect(self, arg):
+        """
+        connect device_index_or_address [user] [password]: Connect to the device at the given index of the discover
+        result.
+        """
+
+        try:
+            args = arg.split()
+            device_address: str = args[0]
+            if device_address.isnumeric():
+                device_address = self.discovered_devices[int(device_address)]
+
+            print(f'connecting to {device_address}...')
+
+            self.client.connect(device_address,
+                                SIInteractiveShell.__get(args, 1, None),
+                                SIInteractiveShell.__get(args, 2, None), background=True)
+            self.wait()
+        except SIProtocolError as error:
+            print(f'connect failed: {error.reason()}')
+        except BaseException as error:
+            print(f'connect failed: {error}')
+
+    def on_connected(self, access_level: SIAccessLevel, gateway_version: str) -> None:
+        print(f'connected, access level = {access_level.name}, gateway version = {gateway_version}.')
+        self.set_prompt('gateway')
+        self.done()
+
+    def do_info(self, _):
+        """
+        info: Shows info about the connection to the gateway.
+        """
+
+        print(f'client state: {self.client.state().name}.')
+        print(f'gateway version: {self.client.gateway_version()}.')
+        print(f'access level: {self.client.access_level().name}.')
+
+    def do_disconnect(self, _):
+        try:
+            self.client.disconnect()
+            self.wait()
+        except SIProtocolError as error:
+            print(f'disconnect failed: {error.reason()}')
+        except BaseException as error:
+            print(f'disconnect failed: {error}')
+
+    def on_disconnected(self) -> None:
+        print('disconnected.')
+        self.set_prompt('(not connected)')
+        self.done()
+
+    def do_enumerate(self, _):
+        """
+        enumerate: Instructs the gateway to scan every configured and functional device access driver for new devices
+        and remove devices that do not respond anymore.
+        """
+
+        try:
+            self.client.enumerate()
+            self.wait()
+        except SIProtocolError as error:
+            print(f'enumerate failed: {error.reason()}')
+        except BaseException as error:
+            print(f'enumerate failed: {error}')
+
+    def on_enumerated(self, status: SIStatus, device_count: int) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'enumerated {device_count} devices.')
+        else:
+            print(f'enumeration failed: {status.name}')
+        self.done()
+
+    def do_describe(self, arg):
+        """
+        describe [id]: Can be used to retrieve information about the available devices and their properties from the
+        connected gateway. The optional argument id can refer to a device access, a device or a property.
+        """
+
+        try:
+            args = arg.split()
+            if len(args) == 0:
+                self.client.describe()
+            else:
+                id_ = args[0].split('.')
+                self.client.describe(SIInteractiveShell.__get(id_, 0), SIInteractiveShell.__get(id_, 1),
+                                     SIInteractiveShell.__get(id_, 2))
+            self.wait()
+        except SIProtocolError as error:
+            print(f'describe failed: {error.reason()}.')
+        except Exception as error:
+            print(f'describe failed: {error}.')
+
+    def on_description(self, status: SIStatus, id_: Optional[str], description: any) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'description for {id_}:')
+            print(description)
+        else:
+            print(f'description failed: {status.name}')
+        self.done()
+
+    def do_read(self, arg):
+        """
+        read property_id: Can be used to retrieve the actual value of one property from the connected gateway.
+        """
+
+        try:
+            args = arg.split()
+            self.client.read_property(args[0])
+            self.wait()
+        except SIProtocolError as error:
+            print(f'read failed: {error.reason()}.')
+        except Exception as error:
+            print(f'read failed: {error}.')
+
+    def on_property_read(self, status: SIStatus, property_id: str, value: Optional[any]) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'{property_id} = {value}.')
+        else:
+            print(f'reading property {property_id} failed: {status.name}')
+        self.done()
+
+    def do_write(self, arg):
+        """
+        write property_id [value] [ram]: This command can be used to change the actual value of a given property.
+                                         The value argument is optional. If value is present the flag "ram" allows to
+                                         write the value non-persistent.
+        """
+
+        try:
+            args = arg.split()
+            self.client.write_property(args[0], SIInteractiveShell.__get(args, 1), SIInteractiveShell.__get(args, 2))
+            self.wait()
+        except SIProtocolError as error:
+            print(f'write failed: {error.reason()}.')
+        except Exception as error:
+            print(f'write failed: {error}.')
+
+    def on_property_written(self, status: SIStatus, property_id: str) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'successfully written to {property_id}.')
+        else:
+            print(f'writing to property {property_id} failed: {status.name}')
+        self.done()
+
+    def do_datalog(self, arg):
+        """
+        datalog [property_id] [from=...] [to=...] [limit=...]: Can be used to retrieve all or a subset of logged data
+            of the given property from the gateway.
+            If not property_id is passed, the list of available properties is print out. Using the optional parameters
+            from=... and to=... whose value has to be a datetime in ISO 8601 format you can select the time frame and
+            using the optional parameter limit=... you can limit the number of entries returned.
+        """
+
+        property_id = None
+        from_ = None
+        to = None
+        limit = None
+        for i in arg.split():
+            if i.startswith('from='):
+                from_ = datetime.datetime.fromisoformat(i[5:])
+            elif i.startswith('to='):
+                to = datetime.datetime.fromisoformat(i[3:])
+            elif i.startswith('limit='):
+                try:
+                    limit = int(i[6:])
+                except ValueError:
+                    print(f'datalog failed: invalid limit argument.')
+                    return
+            else:
+                if property_id is None:
+                    property_id = i
+                else:
+                    print(f'datalog failed: invalid arguments.')
+                    return
+        try:
+            if property_id is None:
+                self.client.read_datalog_properties(from_, to)
+            else:
+                self.client.read_datalog(property_id, from_, to, limit)
+            self.wait()
+        except SIProtocolError as error:
+            print(f'datalog failed: {error.reason()}.')
+        except Exception as error:
+            print(f'datalog failed: {error}.')
+
+    def on_datalog_properties_read(self, status: SIStatus, properties: List[str]) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'successfully read {len(properties)} logged properties:')
+            for entry in properties:
+                print(f'  - {entry}')
+        else:
+            print(f'reading logged properties failed: {status.name}')
+        self.done()
+
+    def on_datalog_read(self, status: SIStatus, property_id: str, count: int, values: List[Tuple[datetime.datetime, any]]) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'successfully read {count} datalog entries for property {property_id}:')
+            for entry in values:
+                print(f'  {entry[0]}: {entry[1]}')
+        else:
+            print(f'reading datalog for property {property_id} failed: {status.name}')
+        self.done()
+
+    def do_messages(self, arg):
+        """
+        messages [from=...] [to=...] [limit=...]: Can be used to retrieve all or a subset of stored messages send by devices on all buses in the past from the gateway.
+                                                  Using the optional parameters from=... and to=... whose value has to be a datetime in ISO 8601 format you can select the time
+                                                  frame and using the optional parameter limit=... you can limit the number of entries returned.
+        """
+
+        from_ = None
+        to = None
+        limit = None
+        for i in arg.split():
+            if i.startswith('from='):
+                from_ = datetime.datetime.fromisoformat(i[5:])
+            elif i.startswith('to='):
+                to = datetime.datetime.fromisoformat(i[3:])
+            elif i.startswith('limit='):
+                try:
+                    limit = int(i[6:])
+                except ValueError:
+                    print(f'messages failed: invalid limit argument.')
+                    return
+            else:
+                print(f'messages failed: invalid arguments.')
+                return
+        try:
+            self.client.read_messages(from_, to, limit)
+            self.wait()
+        except SIProtocolError as error:
+            print(f'messages failed: {error.reason()}.')
+        except Exception as error:
+            print(f'messages failed: {error}.')
+
+    def on_messages_read(self, status: SIStatus, count: int, messages: List[SIDeviceMessage]) -> None:
+        if status == SIStatus.SUCCESS:
+            print(f'successfully read {count} messages:')
+            for message in messages:
+                print(f'  {message.timestamp} | {message.access_id}.{message.device_id}: {message.message} ({message.message_id})')
+        else:
+            print(f'reading messages failed: {status.name}')
+        self.done()
+
+    def do_quit(self, _):
+        """Disconnects from the gateway and quits the interactive shell"""
+        if self.client.state() != SIConnectionState.DISCONNECTED:
+            self.client.disconnect()
+        return True
+
+    def set_prompt(self, prompt: str):
+        if sys.platform == 'win32':
+            self.prompt = f'{prompt}) ~ '
+        else:
+            self.prompt = f'\033[94m{prompt} ~\033[0m '
+
+    def wait(self):
+        pass
+        self.event.wait()
+
+    def done(self):
+        pass
+        self.event.set()
+        self.event.clear()
+
+    @staticmethod
+    def __get(_list, index, default = None):
+        try:
+            return _list[index]
+        except IndexError:
+            return default
+
+    do_EOF = do_quit
+    do_exit = do_quit
+
+
+if __name__ == '__main__':
+    # Create interactive shell.
+    shell = SIInteractiveShell()
+    shell.cmdloop()

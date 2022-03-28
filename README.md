@@ -32,6 +32,24 @@ All the code is in the file **sicli**, to run the example do:
 	# pip install -r requirements.txt
 	# chmod +x sicli
 	# ./sicli -h
+	
+## cli-bluetooth
+
+Simple interactive shell to demonstrate the use if the **Bluetooth** client. If a openstuder gateway has bluetooth enabled, you can alternatively connect to the gateway
+using Bluetooth. This might be simpler as the PC and the gateway do not need to be in the same Network in order to communicate.
+
+![](common/cli-bluetooth.gif)
+
+All the code is in the file **sicli**, to run the example do:
+
+# git clone https://github.com/OpenStuder/openstuder-examples-python.git
+# cd openstuder-examples-python/cli-bluetooth
+# virtualenv venv
+# source venv/bin/activate
+# pip install -r requirements.txt
+# chmod +x sicli
+# ./sicli -h
+
 
 ## datalog-gui  
 
