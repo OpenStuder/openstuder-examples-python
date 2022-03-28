@@ -42,13 +42,13 @@ using Bluetooth. This might be simpler as the PC and the gateway do not need to 
 
 All the code is in the file **sicli**, to run the example do:
 
-# git clone https://github.com/OpenStuder/openstuder-examples-python.git
-# cd openstuder-examples-python/cli-bluetooth
-# virtualenv venv
-# source venv/bin/activate
-# pip install -r requirements.txt
-# chmod +x sicli
-# ./sicli -h
+	# git clone https://github.com/OpenStuder/openstuder-examples-python.git
+	# cd openstuder-examples-python/cli-bluetooth
+	# virtualenv venv
+	# source venv/bin/activate
+	# pip install -r requirements.txt
+	# chmod +x sicli
+	# ./sicli -h
 
 
 ## datalog-gui  
