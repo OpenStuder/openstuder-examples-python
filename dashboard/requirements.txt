@@ -1,4 +1,4 @@
-openstuder-client==0.5.0
+openstuder-client==0.5.3
 Pillow==8.1.2
 pytz==2021.1
 six==1.15.0
